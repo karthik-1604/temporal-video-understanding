@@ -89,3 +89,20 @@ def load_ucf101_splits(
 
 def resolve_video_path(root_dir: str | Path, sample: VideoSample) -> Path:
     return Path(root_dir) / sample.relative_path
+
+
+def find_ucf101_root(input_root: str | Path = "/kaggle/input") -> Path:
+    """Walk input_root to find the directory containing train.csv/test.csv,
+    since Kaggle mount paths aren't always the naive /kaggle/input/<slug>
+    guess (confirmed: this dataset actually mounts one level deeper, under
+    /kaggle/input/datasets/<owner>/<slug>).
+    """
+    input_root = Path(input_root)
+    candidates = {
+        path.parent
+        for path in input_root.rglob("*.csv")
+        if path.name in ("train.csv", "test.csv")
+    }
+    if not candidates:
+        raise FileNotFoundError(f"No train.csv/test.csv found under {input_root}")
+    return sorted(candidates)[0]

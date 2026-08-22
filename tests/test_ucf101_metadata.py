@@ -2,6 +2,7 @@ import pytest
 
 from src.data.ucf101_metadata import (
     build_class_index,
+    find_ucf101_root,
     load_split_metadata,
     load_ucf101_splits,
     resolve_video_path,
@@ -79,6 +80,22 @@ def test_load_ucf101_splits_falls_back_when_index_source_missing(tmp_path):
 
     assert set(splits.keys()) == {"test"}
     assert len(splits["test"]) == 2
+
+
+def test_find_ucf101_root_locates_nested_dataset_dir(tmp_path):
+    nested = tmp_path / "datasets" / "someowner" / "someslug"
+    nested.mkdir(parents=True)
+    _write(nested, "train.csv", TRAIN_CSV)
+    _write(nested, "test.csv", TEST_CSV)
+
+    found = find_ucf101_root(tmp_path)
+
+    assert found == nested
+
+
+def test_find_ucf101_root_raises_when_not_found(tmp_path):
+    with pytest.raises(FileNotFoundError):
+        find_ucf101_root(tmp_path)
 
 
 def test_resolve_video_path_joins_root_and_relative_path(tmp_path):
