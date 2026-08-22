@@ -1,0 +1,14 @@
+{
+  "id": "karthiksatya1610/ucf101-explore",
+  "title": "ucf101-explore",
+  "code_file": "explore_ucf101.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "dataset_sources": ["matthewjansen/ucf101-action-recognition"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

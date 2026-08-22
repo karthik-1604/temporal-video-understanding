@@ -1,0 +1,59 @@
+[{"stream_name":"stdout","time":11.917609788,"data":"dataset_root = /kaggle/input/datasets/matthewjansen/ucf101-action-recognition\n"}
+,{"stream_name":"stdout","time":11.9179652,"data":"top-level contents: ['test', 'test.csv', 'train', 'train.csv', 'val', 'val.csv']\n"}
+,{"stream_name":"stdout","time":11.971021934,"data":"\n"}
+,{"stream_name":"stdout","time":11.971068869,"data":"=== train.csv ===\n"}
+,{"stream_name":"stdout","time":11.971075659,"data":"shape: (10055, 3)\n"}
+,{"stream_name":"stdout","time":11.971080737,"data":"columns: ['clip_name', 'clip_path', 'label']\n"}
+,{"stream_name":"stdout","time":11.971188593,"data":"dtypes:\n"}
+,{"stream_name":"stdout","time":11.971957301,"data":" clip_name    object\n"}
+,{"stream_name":"stdout","time":11.971973165,"data":"clip_path    object\n"}
+,{"stream_name":"stdout","time":11.971978369,"data":"label        object\n"}
+,{"stream_name":"stdout","time":11.971983097,"data":"dtype: object\n"}
+,{"stream_name":"stdout","time":11.985347766,"data":"head:\n"}
+,{"stream_name":"stdout","time":11.985408424,"data":"          clip_name                         clip_path  label\n"}
+,{"stream_name":"stdout","time":11.985415629,"data":"0  v_Swing_g05_c02  /train/Swing/v_Swing_g05_c02.avi  Swing\n"}
+,{"stream_name":"stdout","time":11.985420634,"data":"1  v_Swing_g21_c03  /train/Swing/v_Swing_g21_c03.avi  Swing\n"}
+,{"stream_name":"stdout","time":11.985425858,"data":"2  v_Swing_g07_c01  /train/Swing/v_Swing_g07_c01.avi  Swing\n"}
+,{"stream_name":"stdout","time":11.985430614,"data":"3  v_Swing_g24_c04  /train/Swing/v_Swing_g24_c04.avi  Swing\n"}
+,{"stream_name":"stdout","time":11.985435412,"data":"4  v_Swing_g20_c03  /train/Swing/v_Swing_g20_c03.avi  Swing\n"}
+,{"stream_name":"stdout","time":11.99373768,"data":"unique values in label: 101\n"}
+,{"stream_name":"stdout","time":12.007718204,"data":"\n"}
+,{"stream_name":"stdout","time":12.007756472,"data":"=== test.csv ===\n"}
+,{"stream_name":"stdout","time":12.007762709,"data":"shape: (1723, 3)\n"}
+,{"stream_name":"stdout","time":12.007767552,"data":"columns: ['clip_name', 'clip_path', 'label']\n"}
+,{"stream_name":"stdout","time":12.008043315,"data":"dtypes:\n"}
+,{"stream_name":"stdout","time":12.008640116,"data":" clip_name    object\n"}
+,{"stream_name":"stdout","time":12.008657245,"data":"clip_path    object\n"}
+,{"stream_name":"stdout","time":12.008682416,"data":"label        object\n"}
+,{"stream_name":"stdout","time":12.008695794,"data":"dtype: object\n"}
+,{"stream_name":"stdout","time":12.010181379,"data":"head:\n"}
+,{"stream_name":"stdout","time":12.010206044,"data":"          clip_name                        clip_path  label\n"}
+,{"stream_name":"stdout","time":12.010210674,"data":"0  v_Swing_g21_c02  /test/Swing/v_Swing_g21_c02.avi  Swing\n"}
+,{"stream_name":"stdout","time":12.010214241,"data":"1  v_Swing_g21_c06  /test/Swing/v_Swing_g21_c06.avi  Swing\n"}
+,{"stream_name":"stdout","time":12.010217522,"data":"2  v_Swing_g20_c05  /test/Swing/v_Swing_g20_c05.avi  Swing\n"}
+,{"stream_name":"stdout","time":12.010220669,"data":"3  v_Swing_g04_c03  /test/Swing/v_Swing_g04_c03.avi  Swing\n"}
+,{"stream_name":"stdout","time":12.010223919,"data":"4  v_Swing_g19_c03  /test/Swing/v_Swing_g19_c03.avi  Swing\n"}
+,{"stream_name":"stdout","time":12.011654302,"data":"unique values in label: 101\n"}
+,{"stream_name":"stdout","time":12.013613557,"data":"\n"}
+,{"stream_name":"stdout","time":12.013630776,"data":"=== train/ ===\n"}
+,{"stream_name":"stdout","time":12.013635919,"data":"num class folders: 101\n"}
+,{"stream_name":"stdout","time":12.013640732,"data":"first 5 class names: ['ApplyEyeMakeup', 'ApplyLipstick', 'Archery', 'BabyCrawling', 'BalanceBeam']\n"}
+,{"stream_name":"stdout","time":12.014906915,"data":"sample videos in ApplyEyeMakeup: ['v_ApplyEyeMakeup_g01_c01.avi', 'v_ApplyEyeMakeup_g01_c03.avi', 'v_ApplyEyeMakeup_g01_c05.avi', 'v_ApplyEyeMakeup_g01_c06.avi', 'v_ApplyEyeMakeup_g02_c02.avi']\n"}
+,{"stream_name":"stdout","time":12.015633027,"data":"extensions seen: {'.avi'}\n"}
+,{"stream_name":"stdout","time":12.331624237,"data":"total .avi files under train/: 10055\n"}
+,{"stream_name":"stdout","time":12.333745233,"data":"\n"}
+,{"stream_name":"stdout","time":12.333776084,"data":"=== test/ ===\n"}
+,{"stream_name":"stdout","time":12.333780716,"data":"num class folders: 101\n"}
+,{"stream_name":"stdout","time":12.333784364,"data":"first 5 class names: ['ApplyEyeMakeup', 'ApplyLipstick', 'Archery', 'BabyCrawling', 'BalanceBeam']\n"}
+,{"stream_name":"stdout","time":12.334380853,"data":"sample videos in ApplyEyeMakeup: ['v_ApplyEyeMakeup_g01_c02.avi', 'v_ApplyEyeMakeup_g01_c04.avi', 'v_ApplyEyeMakeup_g02_c01.avi', 'v_ApplyEyeMakeup_g02_c04.avi', 'v_ApplyEyeMakeup_g04_c07.avi']\n"}
+,{"stream_name":"stdout","time":12.335083759,"data":"extensions seen: {'.avi'}\n"}
+,{"stream_name":"stdout","time":12.425661845,"data":"total .avi files under test/: 1723\n"}
+,{"stream_name":"stdout","time":12.42571411,"data":"\n"}
+,{"stream_name":"stdout","time":12.425719707,"data":"done\n"}
+,{"stream_name":"stderr","time":15.575814738,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":15.575871068,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":16.011631801,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":16.011658455,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":17.939823083,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":19.715008522,"data":"[NbConvertApp] Writing 285806 bytes to __results__.html\n"}
+]

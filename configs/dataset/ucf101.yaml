@@ -1,5 +1,10 @@
+# Dataset ref: matthewjansen/ucf101-action-recognition (Kaggle)
+# root_dir verified 2026-08-22 via kaggle_kernel/ucf101_explore — Kaggle mounts
+# competition/dataset sources one level deeper than the naive /kaggle/input/<slug>
+# guess, so this path is real, not assumed. Populated only inside Kaggle kernels,
+# never locally.
 dataset_name: ucf101
-root_dir: /kaggle/input/ucf101  # populated only inside Kaggle kernels, never locally
+root_dir: /kaggle/input/datasets/matthewjansen/ucf101-action-recognition
 split: train
 num_frames: 16
 sampling_strategy: uniform

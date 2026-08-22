@@ -70,7 +70,7 @@ Running build log for this project. Updated at the end of every phase/session.
   video data involved — this is the shared building block every baseline and
   the temporal-resolution experiment will use.
 
-### Next step
+### Next step (from Phase 0)
 
 Build the actual UCF101 dataset loader (metadata parsing, class list, split
 files) designed to run inside a Kaggle kernel against the real download, while
@@ -78,3 +78,65 @@ keeping the loader's pure logic (path resolution, label mapping) unit-testable
 locally against a synthetic fake directory tree. Then stand up the first Kaggle
 kernel (CPU-only, no GPU needed yet) to fetch and inspect the real UCF101
 metadata before writing any baseline model code.
+
+---
+
+## Phase 1 — Real UCF101 layout confirmed, metadata parser built (2026-08-22)
+
+### Decisions made and why
+
+- **Chose the `matthewjansen/ucf101-action-recognition` Kaggle dataset** over
+  several other UCF101 uploads (compared ~10 candidates by usability rating and
+  download count) — highest usability rating (1.0) combined with a high
+  download/vote count, and it ships pre-split `train/test/val` folders rather
+  than requiring manual splitting from the raw UCF101 `.rar` archive.
+- **Verified the real dataset layout with a CPU-only Kaggle exploration kernel
+  before writing any parsing code**, instead of assuming the classic official
+  UCF101 format (`classInd.txt` / `trainlist01.txt` / `testlist01.txt`). This
+  paid off immediately: the real layout is much simpler than the classic
+  format — `train.csv` / `test.csv` / `val.csv` with columns `clip_name,
+  clip_path, label` (label already a class-name string, no separate class-index
+  file to cross-reference) — so writing to the assumed classic format would
+  have produced a parser for a format this dataset doesn't actually use.
+  Confirmed 101 classes, 10,055 train clips, 1,723 test clips, all `.avi`.
+  - Also confirmed the actual mount path is one level deeper than the naive
+    guess: `/kaggle/input/datasets/matthewjansen/ucf101-action-recognition`,
+    not `/kaggle/input/ucf101-action-recognition` — matches a known gotcha
+    already documented in the cross-project Kaggle notes (mount paths aren't
+    always what the dataset slug suggests).
+- **No data left the local machine** — the exploration kernel ran entirely on
+  Kaggle; only its small text log (~6 KB) was pulled back locally
+  (`--file-pattern` restricted to `*.log`), never any `.avi` files or the CSVs
+  themselves. The dataset's real schema was read from the kernel's printed
+  output, not from a locally-downloaded copy.
+- **Class-to-label-index mapping built from a sorted, deduplicated class list**
+  (alphabetical, deterministic) rather than trusting row order in the CSV or
+  any implicit ordering — makes label ids reproducible and independent of which
+  split the index happens to be built from.
+
+### What exists after this step
+
+- `kaggle_kernel/ucf101_explore/` — a CPU-only, no-GPU, no-internet script
+  kernel (`kernel_type: script`, avoiding the jupytext kernelspec bug class
+  entirely) that inspects the real dataset structure. Its output log is kept
+  under `kaggle_kernel/ucf101_explore/output/` as a record of the verified
+  layout.
+- `src/data/ucf101_metadata.py` — parses the real CSV format into a
+  `VideoSample` dataclass (clip_name, relative_path, class_name, label), with
+  a shared class-index builder so label ids stay consistent across
+  train/test/val, plus a path-resolution helper. Pure stdlib `csv`, no pandas
+  dependency needed for something this simple.
+- `configs/dataset/ucf101.yaml` updated with the real, verified `root_dir`.
+- 7 new unit tests (`tests/test_ucf101_metadata.py`) against synthetic CSV
+  fixtures mirroring the real schema exactly — 27 tests passing total, still
+  zero real data touched locally.
+
+### Next step
+
+Write the actual video-reading `Dataset` class (frame decoding via
+decord/opencv + the existing `sample_frame_indices` sampling logic) — this one
+can only be meaningfully exercised against real video files, so its correctness
+will be verified inside a Kaggle kernel rather than locally; keep the frame-index
+math itself (already tested) decoupled from the decoding call so the local test
+suite doesn't need real video I/O. Then implement Baseline 1 (pretrained
+CNN features + temporal average pooling + MLP) as the first trainable model.
