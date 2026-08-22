@@ -1,0 +1,16 @@
+# Local (light) environment — architecture/logic unit tests on synthetic
+# fixtures, dataset config/metadata parsing, Kaggle kernel management.
+# Real data download, video decoding, and actual training run on Kaggle
+# notebooks instead, where torch + GPU + torchvision + opencv/decord are
+# already preinstalled with CUDA support.
+
+numpy
+pyyaml
+pytest
+kaggle
+
+# used locally only for architecture smoke tests (random weights, tiny tensors,
+# pretrained=False) — never real data or real training. Install with:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision

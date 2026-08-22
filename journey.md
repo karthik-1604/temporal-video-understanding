@@ -131,7 +131,7 @@ metadata before writing any baseline model code.
   fixtures mirroring the real schema exactly — 27 tests passing total, still
   zero real data touched locally.
 
-### Next step
+### Next step (from Phase 1)
 
 Write the actual video-reading `Dataset` class (frame decoding via
 decord/opencv + the existing `sample_frame_indices` sampling logic) — this one
@@ -140,3 +140,56 @@ will be verified inside a Kaggle kernel rather than locally; keep the frame-inde
 math itself (already tested) decoupled from the decoding call so the local test
 suite doesn't need real video I/O. Then implement Baseline 1 (pretrained
 CNN features + temporal average pooling + MLP) as the first trainable model.
+
+---
+
+## Phase 2 — GitHub repo live, Baseline 1 architecture (2026-08-22)
+
+### Decisions made and why
+
+- **Public GitHub repo created**: `karthik-1604/temporal-video-understanding`.
+  Generic name (matches the README's resume-positioning title), no target-company
+  name anywhere, repo-local git identity used for the push (real email, not the
+  machine's global placeholder).
+- **Built Baseline 1's architecture before the video-reading `Dataset` class**,
+  reordering the plan from the Phase 1 next-step note — the model and the data
+  pipeline are independent enough to build in either order, and getting the
+  architecture's shapes/gradient-flow verified locally first means the eventual
+  Kaggle training run only has to debug data plumbing, not both model and data
+  at once.
+- **Local torch install follows the exact pattern already validated in a prior
+  project** (`causal-ott-user-modeling`): `pip install torch torchvision
+  --index-url https://download.pytorch.org/whl/cpu`, confirmed via
+  `torch.cuda.is_available() == False` and version string ending `+cpu`. That
+  project's own journal explicitly frames this as "light packages locally... 
+  heavy packages (torch+GPU) assumed present in the Kaggle notebook environment,
+  not installed locally beyond a CPU build for quick smoke tests" — same
+  reasoning applies here (no local GPU either).
+- **All local model tests use `pretrained=False`** — real ImageNet-pretrained
+  weights are only downloaded inside a Kaggle kernel (where training actually
+  happens), not to the local machine. Local tests check wiring only: output
+  shape, gradient flow to the classifier head, backbone freeze/unfreeze
+  behavior, invalid-input handling — random weights are sufficient for all of
+  that.
+- **Switched `requirements-dev.txt` (a raw `pip freeze`) to a hand-authored
+  `requirements.txt`**, matching the same prior project's convention — a
+  `pip freeze` output of a `+cpu` torch build isn't reinstallable via a plain
+  `pip install -r` (those wheels aren't on PyPI), so the file needs the
+  `--index-url` documented inline instead of relying on a frozen version pin.
+
+### What exists after this step
+
+- `src/models/baseline_frame_pool.py` — `FramePoolClassifier`: pretrained
+  backbone (resnet18/resnet34/efficientnet_b0, configurable) → per-frame
+  features → temporal average pool → MLP head. Optional backbone freezing.
+- 8 new unit tests (`tests/test_baseline_frame_pool.py`) — output shape, invalid
+  backbone/input rejection, freeze/unfreeze behavior, gradient flow, and an
+  EfficientNet variant — all against random tensors, 35 tests passing total.
+- `requirements.txt` (local, light deps only + the torch CPU index note).
+- Repo pushed to GitHub for the first time (2 commits at push time).
+
+### Next step
+
+Write the video-reading `Dataset` class and the actual Kaggle training kernel
+for Baseline 1, using the real dataset ref and root_dir already confirmed in
+Phase 1. Check GPU quota before committing to the first real training run.
