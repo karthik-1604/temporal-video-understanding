@@ -1,0 +1,14 @@
+{
+  "id": "karthiksatya1610/baseline1-smoketest",
+  "title": "baseline1-smoketest",
+  "code_file": "smoketest.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["matthewjansen/ucf101-action-recognition"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

@@ -1,8 +1,10 @@
 # Local (light) environment — architecture/logic unit tests on synthetic
 # fixtures, dataset config/metadata parsing, Kaggle kernel management.
 # Real data download, video decoding, and actual training run on Kaggle
-# notebooks instead, where torch + GPU + torchvision + opencv/decord are
-# already preinstalled with CUDA support.
+# notebooks instead, where torch + GPU + torchvision + decord + open_clip_torch
+# are installed as needed (decord/open_clip_torch are pip-installed inside the
+# kernel itself — never required locally, see src/data/video_io.py and
+# src/models/clip_zero_shot.py, both of which lazy-import them).
 
 numpy
 pyyaml

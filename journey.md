@@ -257,7 +257,7 @@ GPU quota checked before starting any training work: 29.62h / 30h remaining
   interpolation), so fully unit-tested locally (5 new tests, 46 total) against
   synthetic frames of arbitrary/non-square resolutions — no real video needed.
 
-### Next step
+### Next step (from Phase 4)
 
 Write the Kaggle training kernel for Baseline 1, composing everything built so
 far: `ucf101_metadata` → `VideoClipDataset` (with the real `decord_clip_reader`
@@ -265,3 +265,66 @@ and `resize_and_normalize` as its transform) → `FramePoolClassifier`. Follow t
 `git clone` pattern from the prior project (clone this public repo into the
 kernel's working directory, `sys.path.insert` it) so the kernel can import
 `src.*` directly instead of duplicating code into the kernel script.
+
+---
+
+## Phase 5 — Baseline 1 training kernel, real GPU run (2026-08-22)
+
+### Decisions made and why
+
+- **Smoke test before the full run**: a small CPU/GPU dry run
+  (`kaggle_kernel/baseline1_smoketest/`, 128 clips) validated the whole
+  pipeline end to end and measured real throughput before committing to a
+  full-dataset run — caught the P100 issue immediately and cheaply rather than
+  discovering it partway through a full training run.
+- **Hit the exact documented P100/sm_60 issue on the first smoke-test attempt**
+  (`torch.AcceleratorError: no kernel image is available`) — same root cause
+  already logged in `KAGGLE_WORKFLOW_NOTES.md` from the prior project. Applied
+  the known fix (reinstall `torch==2.5.1`/`torchvision==0.20.1` from the
+  `cu121` index before any `import torch`), but **conditionally**, only after
+  detecting a P100 via `nvidia-smi` — not applied preemptively on every GPU
+  kernel, per that same note's later correction (a blind pin risks its own new
+  conflicts on a GPU that wouldn't have needed it). Re-run succeeded: GPU
+  verified via a real matmul + `.device` check, not just `is_available()`.
+- **Real smoke-test numbers drove the training design**: 15.14 clips/sec
+  running the ResNet18 backbone forward pass on the assigned P100, ~913 MB peak
+  GPU memory, ~11 min estimated for one full-train-set backbone pass. Since the
+  backbone is frozen for Baseline 1, re-running it every epoch would waste
+  quota for no benefit — instead, embeddings are extracted **once** per split
+  and the small MLP head is trained on cached features (near-instant per
+  epoch). This is the same "frame caching" idea the plan lists as an optional
+  data-engineering demonstration, arrived at here for a concrete efficiency
+  reason rather than added just to check a box.
+- **Confirmed the documented "ERROR pulls unfiltered kernel output" gotcha
+  again, this time via the regex file_pattern rather than a loose grep**: even
+  `--file-pattern ".*\.log"` matched a `.log` file that was part of the
+  kernel's own `git clone`d copy of this repo (the *committed*
+  `ucf101_explore` log), not just kernel-generated output — pulled and
+  discarded. Fixed for the next pull by anchoring the pattern to exclude
+  `repo/`: `"^(?!repo/).*\.log"`.
+
+### What exists after this step
+
+- `src/models/clip_zero_shot.py` — Baseline 3 (CLIP zero-shot, the JD's
+  LLM/VLM gap-closer): pure-logic prompt construction
+  (`camel_case_to_words`/`class_name_to_prompt`) and cosine-similarity
+  classification (`cosine_classify`), both unit-tested locally with no real
+  CLIP model (9 new tests, 57 total). The real `open_clip`-backed
+  `CLIPZeroShotClassifier` is lazy-imported, Kaggle-only — same pattern as
+  `decord_clip_reader`.
+- `kaggle_kernel/baseline1_smoketest/` — validated pipeline + real throughput
+  numbers (kept as a record).
+- `kaggle_kernel/baseline1_train/train_baseline1.py` — full Baseline 1
+  training: embedding extraction (train/val/test), MLP head training with
+  best-val-acc checkpointing, test-set evaluation (top-1/top-5 accuracy, macro
+  F1, per-class report, confusion matrix), inference latency/throughput at
+  batch sizes 1 and 8, param counts, peak GPU memory — all saved to
+  `results/baseline1_metrics.json` + a small classifier-head checkpoint,
+  nothing else pulled back locally.
+
+### Next step
+
+Pull and record the actual Baseline 1 results once the training kernel
+completes; then decide whether Experiment A's 8-vs-16-frame comparison reuses
+the same cached-embeddings design (would need a second embedding-extraction
+pass at 8 frames) before moving to Baseline 2 (CNN+LSTM/GRU).
