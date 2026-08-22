@@ -1,7 +1,8 @@
 # Temporal Video Understanding with CNN-RNN and Video Transformers
 
-Research-oriented video action-recognition project built for an AI research role
-focused on video understanding and predictive modeling. Compares frame-level,
+Research-oriented video action-recognition project built for a data science / AI
+internship application focused on video analysis and predictive modeling.
+Compares frame-level,
 recurrent, transformer, and zero-shot vision-language approaches on a temporal
 video classification task, with a research-experiment suite around temporal
 resolution, temporal modeling architecture, augmentation, class balance/bias, and

@@ -12,9 +12,9 @@ Running build log for this project. Updated at the end of every phase/session.
   much temporal modeling improves accuracy over frame-level image features, plus
   a research-experiment suite (temporal resolution, temporal modeling
   architecture, augmentation, class imbalance, robustness), annotation analysis,
-  explainability, and a small unsupervised component. Chosen to match an AI
-  research role focused on video understanding and predictive modeling, not
-  because it was the only reasonable option — an initial draft plan was reviewed
+  explainability, and a small unsupervised component. Chosen to match a data
+  science / AI internship focused on video analysis and predictive modeling,
+  not because it was the only reasonable option — an initial draft plan was reviewed
   against the actual target job description line-by-line rather than taken at
   face value.
 - **Three additions folded into the original plan** after that comparison, because
@@ -188,8 +188,49 @@ CNN features + temporal average pooling + MLP) as the first trainable model.
 - `requirements.txt` (local, light deps only + the torch CPU index note).
 - Repo pushed to GitHub for the first time (2 commits at push time).
 
-### Next step
+### Next step (from Phase 2)
 
 Write the video-reading `Dataset` class and the actual Kaggle training kernel
 for Baseline 1, using the real dataset ref and root_dir already confirmed in
 Phase 1. Check GPU quota before committing to the first real training run.
+
+---
+
+## Phase 3 — Video-clip Dataset, decoupled from real decoding (2026-08-22)
+
+### Decisions made and why
+
+- **Frame decoding injected as a `clip_reader` callable** rather than hardcoded
+  into the `Dataset` class — `src/data/video_dataset.py`'s `VideoClipDataset`
+  takes any `(video_path, num_frames, strategy, seed) -> frames` function.
+  The real implementation (`src/data/video_io.py`, `decord`-based, lazy-imported
+  so the module stays importable without `decord` installed) only runs inside a
+  Kaggle kernel against real video files; local tests inject a fake reader that
+  returns fixed-shape zero arrays instead. This is the same
+  "decouple pure logic from the thing that needs real data" pattern as
+  Phase 0's sampling module and Phase 1's metadata parser — it's what let this
+  whole data-pipeline layer get built and tested (12 more tests, 41 total) with
+  zero video files or decoding libraries on the local machine.
+- Caught and fixed a genuinely non-obvious test bug while writing this (not a
+  `src/` bug): `numpy_array.sum()` on a `uint8` array can return a numpy scalar
+  type `torch.tensor(...)` rejects with `TypeError: an integer is required` —
+  fixed by wrapping in `int(...)` in the test's custom-transform fixture.
+
+### What exists after this step
+
+- `src/data/video_dataset.py` — `VideoClipDataset(torch.utils.data.Dataset)`,
+  `default_to_tensor` (uint8 (T,H,W,C) → float32 (T,C,H,W) in [0,1]).
+- `src/data/video_io.py` — `decord_clip_reader`, the real decoder (Kaggle-only).
+- Fixed the "AI research role" phrasing in `journey.md`/`README.md` to
+  correctly say "data science / AI internship" — this is a data science
+  internship posting, not a pure research-scientist role; the earlier generic
+  phrasing overcorrected.
+
+### Next step
+
+Write the Kaggle training kernel for Baseline 1: attach the UCF101 dataset,
+build train/val `VideoClipDataset`s with the real `decord_clip_reader`, run a
+short training loop (frozen backbone, MLP head only, cross-entropy). Check GPU
+quota first; this is the first kernel that touches real video decoding at
+scale, so also verify wall-clock/throughput on a small subset before committing
+to a full-dataset run.
