@@ -33,3 +33,6 @@ kaggle.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code harness state, not project content
+/.claude/

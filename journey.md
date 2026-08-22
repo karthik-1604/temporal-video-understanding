@@ -322,9 +322,72 @@ kernel's working directory, `sys.path.insert` it) so the kernel can import
   `results/baseline1_metrics.json` + a small classifier-head checkpoint,
   nothing else pulled back locally.
 
-### Next step
+### Next step (from Phase 5)
 
 Pull and record the actual Baseline 1 results once the training kernel
 completes; then decide whether Experiment A's 8-vs-16-frame comparison reuses
 the same cached-embeddings design (would need a second embedding-extraction
 pass at 8 frames) before moving to Baseline 2 (CNN+LSTM/GRU).
+
+---
+
+## Phase 6 — Baseline 1 real results (2026-08-22)
+
+### Results
+
+Trained on the real UCF101 split (10,055 train / 1,673 val / 1,723 test, 101
+classes), frozen ResNet18 backbone + MLP head, 40 epochs on cached embeddings:
+
+- **Test top-1 accuracy: 96.11%, top-5: 99.65%, macro F1: 96.52%**
+- 11.33M total params, only 157,285 trainable (MLP head only)
+- Inference latency: 8.11 ms/clip (batch 1, 123.3 clips/sec), 51.1 ms/batch at
+  batch 8 (156.4 clips/sec effective throughput)
+- Peak GPU memory: 1.77 GB
+- Real embedding-extraction throughput: 20.1-20.7 clips/sec across
+  train/val/test (vs. the smoke test's 15.14 clips/sec estimate on a 128-clip
+  subset — the full run benefited from `num_workers=4` vs. the smoke test's 2,
+  plus a warmed-up decode pipeline)
+- Total kernel wall-clock: ~11 min for embedding extraction across all three
+  splits, negligible additional time for 40 epochs of MLP training on cached
+  features (exactly the payoff the cached-embeddings design was chosen for)
+
+### Investigated finding: the two worst classes are confused with each other, in both directions
+
+Per-class F1 ranged from 1.00 (five classes, including `YoYo`, `Typing`) down
+to a clear floor at **`BasketballDunk` (F1 0.489) and `Basketball` (F1 0.586)**
+— the two worst classes by a wide margin (next-worst is `Rafting` at 0.846).
+Checked the actual confusion matrix rather than treating this as generic
+"some classes are just harder": **6/17 `BasketballDunk` clips predicted as
+`Basketball`, and 17/34 `Basketball` clips (exactly half) predicted as
+`BasketballDunk`** — a genuine bidirectional confusion between exactly these
+two classes, not spread across many classes.
+
+This makes sense given the model architecture, not just "hard classes": both
+actions share the same visual scene (basketball court, hoop, players), so the
+only real distinguishing signal is the *temporal* dunking motion — which
+**temporal average pooling destroys by construction**. This is precisely the
+project's core research question in miniature (does temporal modeling help
+over frame-level features?), so this exact class pair is a natural,
+non-cherry-picked test case for whether Baseline 2 (CNN+LSTM) actually
+resolves it.
+
+### What exists after this step
+
+- `reports/baseline1_metrics.json` — full results (history, per-class report,
+  confusion matrix, latency, params) committed for the record.
+- `kaggle_kernel/baseline1_train/output/` — the kernel's log kept alongside
+  the training script, matching the exploration kernel's precedent.
+- Trained classifier-head checkpoint (631 KB) kept **local only**
+  (`*.pt` gitignored) — small enough to not need cloud storage, but binary
+  model weights don't belong in git history; regenerable from the kernel in
+  ~11 min if needed again.
+- `.gitignore` also now excludes `/.claude/` (harness state files like
+  `scheduled_tasks.lock`, not project content).
+
+### Next step
+
+Baseline 2 (CNN + LSTM/GRU) — the natural next comparison, and the one most
+likely to directly test the Basketball/BasketballDunk finding above. Reuse the
+same cached-embeddings idea, but keep *per-frame* embeddings (not pre-averaged)
+so the LSTM/GRU has the sequence to consume, rather than reusing Baseline 1's
+already-pooled vectors.

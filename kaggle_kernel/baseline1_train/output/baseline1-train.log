@@ -1,0 +1,59 @@
+[{"stream_name":"stderr","time":0.839633856,"data":"Cloning into 'repo'...\n"}
+,{"stream_name":"stdout","time":1.591735414,"data":"P100 detected (Tesla P100-PCIE-16GB) — reinstalling torch for sm_60 support\n"}
+,{"stream_name":"stdout","time":15.593136636,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":18.354002323,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 76.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":18.728935558,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 174.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":18.889460223,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 213.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":19.066133369,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 188.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":26.781602793,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":31.797102553,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 85.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":33.93478975,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 116.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":34.854258894,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 194.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":35.667692705,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 147.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":36.961124132,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 126.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":38.764347199,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 129.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":39.475443298,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 110.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":42.151286059,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 8.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":45.515292468,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 29.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":161.407745553,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":161.407792253,"data":"torchaudio 2.10.0+cu128 requires torch==2.10.0, but you have torch 2.5.1+cu121 which is incompatible.\n"}
+,{"stream_name":"stdout","time":166.730080164,"data":"GPU verified: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":168.193619778,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.6/13.6 MB 101.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":205.973708985,"data":"train=10055 val=1673 test=1723 classes=101\n"}
+,{"stream_name":"stderr","time":206.157929093,"data":"Downloading: \"https://download.pytorch.org/models/resnet18-f37072fd.pth\" to /root/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth\n"}
+,{"stream_name":"stderr","time":206.535160986,"data":"\r  0%|          | 0.00/44.7M [00:00\u003c?, ?B/s]\r 20%|█▉        | 8.88M/44.7M [00:00\u003c00:00, 92.7MB/s]\r 65%|██████▌   | 29.1M/44.7M [00:00\u003c00:00, 163MB/s] \r100%|██████████| 44.7M/44.7M [00:00\u003c00:00, 168MB/s]\n"}
+,{"stream_name":"stdout","time":206.601497995,"data":"params: total=11,333,797 trainable=157,285\n"}
+,{"stream_name":"stdout","time":707.449342748,"data":"train: extracted 10055 embeddings in 500.8s (20.08 clips/sec)\n"}
+,{"stream_name":"stdout","time":788.666139632,"data":"val: extracted 1673 embeddings in 81.2s (20.60 clips/sec)\n"}
+,{"stream_name":"stdout","time":871.743821412,"data":"test: extracted 1723 embeddings in 83.1s (20.74 clips/sec)\n"}
+,{"stream_name":"stdout","time":872.199684592,"data":"epoch   0 train_loss=2.9772 train_acc=0.3266 val_loss=1.6217 val_acc=0.6420\n"}
+,{"stream_name":"stdout","time":873.697847678,"data":"epoch   5 train_loss=0.5508 train_acc=0.8445 val_loss=0.4566 val_acc=0.8805\n"}
+,{"stream_name":"stdout","time":875.221756133,"data":"epoch  10 train_loss=0.3010 train_acc=0.9137 val_loss=0.3025 val_acc=0.9199\n"}
+,{"stream_name":"stdout","time":876.72803562,"data":"epoch  15 train_loss=0.2003 train_acc=0.9392 val_loss=0.2284 val_acc=0.9301\n"}
+,{"stream_name":"stdout","time":878.235089283,"data":"epoch  20 train_loss=0.1398 train_acc=0.9556 val_loss=0.1948 val_acc=0.9414\n"}
+,{"stream_name":"stdout","time":879.707419794,"data":"epoch  25 train_loss=0.1105 train_acc=0.9647 val_loss=0.1815 val_acc=0.9444\n"}
+,{"stream_name":"stdout","time":881.202448261,"data":"epoch  30 train_loss=0.1020 train_acc=0.9677 val_loss=0.1740 val_acc=0.9444\n"}
+,{"stream_name":"stdout","time":882.688443695,"data":"epoch  35 train_loss=0.0889 train_acc=0.9698 val_loss=0.1598 val_acc=0.9528\n"}
+,{"stream_name":"stdout","time":883.86326922,"data":"epoch  39 train_loss=0.0773 train_acc=0.9736 val_loss=0.1493 val_acc=0.9564\n"}
+,{"stream_name":"stdout","time":883.863458373,"data":"best val_acc=0.9564\n"}
+,{"stream_name":"stdout","time":883.890162287,"data":"test top1_acc=0.9611 top5_acc=0.9965 macro_f1=0.9652\n"}
+,{"stream_name":"stdout","time":885.264228066,"data":"latency: {\n"}
+,{"stream_name":"stdout","time":885.264286522,"data":"  \"batch_1\": {\n"}
+,{"stream_name":"stdout","time":885.264292325,"data":"    \"mean_latency_ms\": 8.111723950003125,\n"}
+,{"stream_name":"stdout","time":885.264295667,"data":"    \"throughput_clips_per_sec\": 123.27835687746928\n"}
+,{"stream_name":"stdout","time":885.264298802,"data":"  },\n"}
+,{"stream_name":"stdout","time":885.264301651,"data":"  \"batch_8\": {\n"}
+,{"stream_name":"stdout","time":885.264304684,"data":"    \"mean_latency_ms\": 51.1377616499999,\n"}
+,{"stream_name":"stdout","time":885.264307887,"data":"    \"throughput_clips_per_sec\": 156.4401675371338\n"}
+,{"stream_name":"stdout","time":885.26431094,"data":"  }\n"}
+,{"stream_name":"stdout","time":885.264313759,"data":"}\n"}
+,{"stream_name":"stdout","time":885.27216955,"data":"\n"}
+,{"stream_name":"stdout","time":885.272192567,"data":"saved results/baseline1_metrics.json and results/baseline1_classifier_head.pt\n"}
+,{"stream_name":"stdout","time":885.272211737,"data":"done\n"}
+,{"stream_name":"stderr","time":888.250524694,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":888.250552744,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":888.460707289,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":888.460747011,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":889.070894554,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":890.219308735,"data":"[NbConvertApp] Writing 321972 bytes to __results__.html\n"}
+]
