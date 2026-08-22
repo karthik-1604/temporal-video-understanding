@@ -1,0 +1,35 @@
+# Local-only planning/notes docs — never pushed to GitHub
+CLAUDE.md
+PROJECT_WORKFLOW_RULES.md
+KAGGLE_WORKFLOW_NOTES.md
+02_Sony_AI_Video_Analysis_Research.md
+summary.md
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data & model artifacts — never store real data/checkpoints in this repo
+# (anchored to repo root so it doesn't also match src/data/, the source package)
+/data/
+*.ckpt
+*.pt
+*.pth
+*.h5
+
+# Env / secrets
+.env
+kaggle.json
+
+# OS
+.DS_Store
+Thumbs.db

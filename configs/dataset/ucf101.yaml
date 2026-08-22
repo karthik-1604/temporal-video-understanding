@@ -1,0 +1,7 @@
+dataset_name: ucf101
+root_dir: /kaggle/input/ucf101  # populated only inside Kaggle kernels, never locally
+split: train
+num_frames: 16
+sampling_strategy: uniform
+image_size: 224
+seed: 42
