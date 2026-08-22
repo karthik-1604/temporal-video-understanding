@@ -8,24 +8,8 @@ from __future__ import annotations
 
 import torch
 from torch import nn
-from torchvision import models
 
-_BACKBONE_FACTORIES: dict[str, tuple] = {
-    "resnet18": (models.resnet18, "fc", 512),
-    "resnet34": (models.resnet34, "fc", 512),
-    "efficientnet_b0": (models.efficientnet_b0, "classifier", 1280),
-}
-
-
-def _build_backbone(name: str, pretrained: bool) -> tuple[nn.Module, int]:
-    if name not in _BACKBONE_FACTORIES:
-        raise ValueError(
-            f"Unknown backbone {name!r}; expected one of {sorted(_BACKBONE_FACTORIES)}"
-        )
-    factory, head_attr, feature_dim = _BACKBONE_FACTORIES[name]
-    backbone = factory(weights="DEFAULT" if pretrained else None)
-    setattr(backbone, head_attr, nn.Identity())
-    return backbone, feature_dim
+from src.models.backbones import build_backbone
 
 
 class FramePoolClassifier(nn.Module):
@@ -41,7 +25,7 @@ class FramePoolClassifier(nn.Module):
         dropout: float = 0.3,
     ) -> None:
         super().__init__()
-        self.backbone, feature_dim = _build_backbone(backbone, pretrained)
+        self.backbone, feature_dim = build_backbone(backbone, pretrained)
         if freeze_backbone:
             for param in self.backbone.parameters():
                 param.requires_grad = False

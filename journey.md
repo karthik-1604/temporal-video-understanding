@@ -384,10 +384,56 @@ resolves it.
 - `.gitignore` also now excludes `/.claude/` (harness state files like
   `scheduled_tasks.lock`, not project content).
 
-### Next step
+### Next step (from Phase 6)
 
 Baseline 2 (CNN + LSTM/GRU) — the natural next comparison, and the one most
 likely to directly test the Basketball/BasketballDunk finding above. Reuse the
 same cached-embeddings idea, but keep *per-frame* embeddings (not pre-averaged)
 so the LSTM/GRU has the sequence to consume, rather than reusing Baseline 1's
 already-pooled vectors.
+
+---
+
+## Phase 7 — Baseline 2 (CNN+RNN) architecture (2026-08-22)
+
+### Decisions made and why
+
+- **Extracted `build_backbone` out of `baseline_frame_pool.py` into a shared
+  `src/models/backbones.py`** before writing Baseline 2 — it was a private
+  (`_build_backbone`) helper used by exactly one model; Baseline 2 needs the
+  identical backbone-loading logic (same supported names, same "strip the
+  classification head" behavior) so duplicating it would risk the two models
+  silently drifting (e.g. one gaining a new backbone option the other doesn't
+  support). Refactored first, confirmed Baseline 1's 8 tests still pass
+  unchanged, then built Baseline 2 on top of the shared version.
+- **`CNNRNNClassifier` exposes `forward_from_features`** (skips the backbone,
+  takes already-extracted `(batch, num_frames, feature_dim)` tensors) as a
+  first-class method rather than duplicating the RNN+classifier logic in the
+  training kernel — same efficiency idea as Baseline 1 (frozen backbone run
+  once, not every epoch), but this time keeping the *per-frame* sequence
+  instead of pre-averaging, since the whole point of Baseline 2 is giving the
+  RNN the ordered sequence Baseline 1's average pooling threw away.
+- **Added a frame-order-sensitivity test as the key architectural check**
+  (`test_sensitive_to_frame_order`: reversing frame order must change the
+  prediction) — this is the one property that actually distinguishes Baseline
+  2 from Baseline 1 architecturally, so it's worth testing explicitly rather
+  than just checking output shapes.
+
+### What exists after this step
+
+- `src/models/backbones.py` — shared `build_backbone`, 3 new tests.
+- `src/models/baseline_cnn_rnn.py` — `CNNRNNClassifier`: backbone (shared,
+  optionally frozen) → LSTM or GRU (configurable layers/hidden size/
+  bidirectional) → dropout + linear classifier on the final timestep. 12 new
+  tests (order-sensitivity, LSTM/GRU, bidirectional, multi-layer, freeze
+  behavior, gradient flow, `forward_from_features` parity) — 71 tests passing
+  total, all still against random tensors/synthetic data.
+
+### Next step
+
+Write the Kaggle training kernel for Baseline 2: extract *per-frame* (not
+averaged) embeddings once per split (~330 MB for the train split at 16 frames
+× 512-dim float32 — checked it fits comfortably in Kaggle's RAM/GPU memory
+before committing to this design), then train the LSTM/GRU + classifier on
+the cached sequences. Compare directly against Baseline 1's 96.11% top-1 and
+specifically check whether the Basketball/BasketballDunk confusion improves.
