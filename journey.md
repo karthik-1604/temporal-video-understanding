@@ -234,3 +234,34 @@ short training loop (frozen backbone, MLP head only, cross-entropy). Check GPU
 quota first; this is the first kernel that touches real video decoding at
 scale, so also verify wall-clock/throughput on a small subset before committing
 to a full-dataset run.
+
+**Correction, same day:** the README's opening framed the project as "built for
+a data science / AI internship application" — reworked to instead open with
+the actual research question (how much does temporal modeling help vs.
+frame-level features) and drop the application framing entirely. A README
+should describe the problem being solved, not the reason the author built it;
+`journey.md` is where the real motivation belongs.
+
+GPU quota checked before starting any training work: 29.62h / 30h remaining
+(resets 2026-08-29).
+
+---
+
+## Phase 4 — Resize/normalize transform (2026-08-22)
+
+### What exists after this step
+
+- `src/preprocessing/transforms.py` — `resize_and_normalize`: (T,H,W,C) uint8 →
+  (T,C,image_size,image_size) float32, ImageNet-normalized. Needed because real
+  UCF101 frames aren't natively 224×224. Pure tensor ops (bilinear
+  interpolation), so fully unit-tested locally (5 new tests, 46 total) against
+  synthetic frames of arbitrary/non-square resolutions — no real video needed.
+
+### Next step
+
+Write the Kaggle training kernel for Baseline 1, composing everything built so
+far: `ucf101_metadata` → `VideoClipDataset` (with the real `decord_clip_reader`
+and `resize_and_normalize` as its transform) → `FramePoolClassifier`. Follow the
+`git clone` pattern from the prior project (clone this public repo into the
+kernel's working directory, `sys.path.insert` it) so the kernel can import
+`src.*` directly instead of duplicating code into the kernel script.

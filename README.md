@@ -1,12 +1,12 @@
 # Temporal Video Understanding with CNN-RNN and Video Transformers
 
-Research-oriented video action-recognition project built for a data science / AI
-internship application focused on video analysis and predictive modeling.
-Compares frame-level,
-recurrent, transformer, and zero-shot vision-language approaches on a temporal
-video classification task, with a research-experiment suite around temporal
-resolution, temporal modeling architecture, augmentation, class balance/bias, and
-robustness to degradation.
+How much does modeling *temporal* structure actually help video understanding,
+compared to just looking at individual frames? This project answers that
+question empirically on action recognition (UCF101): it compares frame-level
+pooling, a CNN+RNN model, a video transformer, and zero-shot vision-language
+classification on the same task, then runs a research-experiment suite around
+temporal resolution, augmentation, class imbalance/bias, and robustness to
+degraded input (dropped frames, low resolution, compression).
 
 This is a model-development and experimentation project, not a video application
 or product.
