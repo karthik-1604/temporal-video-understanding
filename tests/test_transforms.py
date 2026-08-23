@@ -1,7 +1,13 @@
 import numpy as np
 import torch
+from torchvision import transforms as tv_transforms
 
-from src.preprocessing.transforms import IMAGENET_MEAN, IMAGENET_STD, resize_and_normalize
+from src.preprocessing.transforms import (
+    IMAGENET_MEAN,
+    IMAGENET_STD,
+    frames_to_pil_transformed,
+    resize_and_normalize,
+)
 
 
 def test_resizes_to_requested_size():
@@ -46,3 +52,34 @@ def test_output_is_float32():
     clip = resize_and_normalize(frames)
 
     assert clip.dtype == torch.float32
+
+
+def test_frames_to_pil_transformed_applies_transform_per_frame():
+    frames = np.random.randint(0, 256, size=(5, 40, 50, 3), dtype=np.uint8)
+    transform = tv_transforms.Compose([
+        tv_transforms.Resize((16, 16)),
+        tv_transforms.ToTensor(),
+    ])
+
+    clip = frames_to_pil_transformed(frames, transform)
+
+    assert clip.shape == (5, 3, 16, 16)
+    assert clip.dtype == torch.float32
+
+
+def test_frames_to_pil_transformed_preserves_frame_order():
+    frames = np.zeros((3, 8, 8, 3), dtype=np.uint8)
+    frames[1] = 255  # only the middle frame is white
+
+    seen_means = []
+
+    def recording_transform(pil_image):
+        arr = np.array(pil_image)
+        seen_means.append(arr.mean())
+        return torch.from_numpy(arr).permute(2, 0, 1).float()
+
+    frames_to_pil_transformed(frames, recording_transform)
+
+    assert seen_means[0] == 0
+    assert seen_means[1] == 255
+    assert seen_means[2] == 0
