@@ -429,7 +429,7 @@ already-pooled vectors.
   behavior, gradient flow, `forward_from_features` parity) — 71 tests passing
   total, all still against random tensors/synthetic data.
 
-### Next step
+### Next step (from Phase 7)
 
 Write the Kaggle training kernel for Baseline 2: extract *per-frame* (not
 averaged) embeddings once per split (~330 MB for the train split at 16 frames
@@ -437,3 +437,104 @@ averaged) embeddings once per split (~330 MB for the train split at 16 frames
 before committing to this design), then train the LSTM/GRU + classifier on
 the cached sequences. Compare directly against Baseline 1's 96.11% top-1 and
 specifically check whether the Basketball/BasketballDunk confusion improves.
+
+---
+
+## Phase 8 — Baseline 2 real results: a genuine negative result, investigated (2026-08-22)
+
+### v1 result: both RNN variants underperformed Baseline 1
+
+Trained both LSTM and GRU heads on identical cached per-frame embeddings
+(same 10,055/1,673/1,723 split, 40 epochs):
+
+| Model | Test top-1 | Test macro F1 |
+|---|---|---|
+| Baseline 1 (avg pool) | 96.11% | 96.52% |
+| Baseline 2 LSTM | 92.92% | 92.69% |
+| Baseline 2 GRU (best variant) | 95.01% | 95.24% |
+
+Neither beat Baseline 1 — the opposite of the naive expectation that temporal
+modeling should help. Checked the *specific* case this baseline was meant to
+test (Phase 6's Basketball/BasketballDunk confusion) rather than just noting
+the aggregate number moved the wrong way: it got **worse**, not better.
+LSTM predicted **zero** of the 17 `BasketballDunk` test clips correctly (all
+17 went to `Basketball`); GRU got 1/17. Baseline 1 had gotten 11/17 correct.
+
+**Investigated via the actual training curves, not accepted at face value**:
+both variants showed real overfitting (train acc 97-99% vs. val acc
+92-94% — a much wider gap than Baseline 1's own train/val gap). GRU's last few
+epochs additionally showed a real instability spike: val_acc dropped from
+93.7% (epoch 35) to 83.8% (epoch 39) alongside a loss spike from 0.23 to 0.55.
+Identified three concrete, non-hand-wavy contributing factors:
+
+1. **No gradient clipping**, despite RNN training's well-known susceptibility
+   to occasional gradient spikes — directly consistent with the observed
+   instability spike.
+2. **`num_layers=1` silently disabled PyTorch's internal recurrent dropout**
+   (`nn.LSTM`/`nn.GRU`'s `dropout` argument only applies *between* stacked
+   layers, a real PyTorch gotcha, not obvious from the constructor signature)
+   — so the only regularization was the final classifier's dropout, despite
+   the RNN having 4-5x more trainable parameters (614K-814K) than Baseline
+   1's head (157K).
+3. **Reused Baseline 1's learning rate (1e-3) unchanged** for a differently
+   shaped loss landscape (recurrent vs. a simple 2-layer MLP) rather than
+   retuning it.
+
+### Fix and re-run
+
+Kept the identical cached embeddings and evaluation protocol, changed only:
+`num_layers=2` (activates real internal dropout), gradient clipping
+(`max_norm=2.0`), and halved learning rate (5e-4). Re-run in progress —
+results recorded below once complete. v1's full results kept for the record
+at `reports/baseline2_metrics_v1_overfit.json` regardless of outcome, since
+the before/after comparison is itself the more valuable artifact than either
+run alone.
+
+### v2 result: training is more stable, but the core finding didn't change — and that's the actual answer
+
+| Model | v1 test top-1 | v2 test top-1 | v1 BasketballDunk correct | v2 BasketballDunk correct |
+|---|---|---|---|---|
+| LSTM | 92.92% | 92.69% | 0/17 | 0/17 |
+| GRU | 95.01% | 93.67% | 1/17 | 0/17 |
+
+The fix worked exactly as targeted — no more instability spikes (GRU's worst
+mid-training dip is now ~0.89-0.93, not the v1 crash to 0.838), and the
+train/val gap is somewhat tighter. But **test accuracy did not improve** (GRU
+is actually 1.3 points lower), and **`BasketballDunk` still goes to 0/17
+correct in both variants**, identically to before. Ruling out "the training
+process was broken" as a sufficient explanation (it demonstrably wasn't,
+across two different regularization/LR regimes) points at a different, more
+fundamental bottleneck: **the frozen ResNet18 backbone is ImageNet-pretrained
+for static image classification, not motion.** Consecutive frame embeddings
+from a scene with only fine-grained motion difference (a dunk vs. dribbling,
+same court, same players, same camera framing) may simply be nearly identical
+in that feature space — in which case no amount of RNN capacity or tuning can
+recover a distinction that was never encoded in the per-frame features the
+RNN receives as input. Average pooling did comparatively better on this pair
+not because it's a better *temporal* model (it has no temporal awareness at
+all) but because BasketballDunk apparently has *some* distinguishing static
+visual signal (different camera angle/framing near the hoop) that pooling
+picks up and the RNN's harder optimization problem loses.
+
+This is left as a well-reasoned hypothesis, not confirmed further this
+session — the natural test would be unfreezing/fine-tuning the backbone (so
+gradients could shape features toward motion-relevant information) or moving
+to a genuinely video-native architecture (Model 4, Phase 2), rather than
+continuing to tune the RNN on top of a fixed image backbone.
+
+### What exists after this step
+
+- `kaggle_kernel/baseline2_train/train_baseline2.py` — reflects v2 (the fixed
+  version actually used for the final reported numbers); v1's code is
+  preserved in git history for anyone reconstructing the before/after.
+- `reports/baseline2_metrics.json` — v2 (final) full results.
+- `reports/baseline2_metrics_v1_overfit.json` — v1 results, kept for the
+  before/after record.
+
+### Next step
+
+Baseline 3 (CLIP zero-shot) — architecture already built (Phase 5); write and
+run its Kaggle kernel. Also worth specifically checking whether CLIP's
+image-text embedding space handles the Basketball/BasketballDunk pair any
+differently, given it's a genuinely different representation than
+ImageNet-supervised ResNet features.

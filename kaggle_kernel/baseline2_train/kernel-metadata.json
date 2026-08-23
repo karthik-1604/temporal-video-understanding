@@ -1,0 +1,14 @@
+{
+  "id": "karthiksatya1610/baseline2-train",
+  "title": "baseline2-train",
+  "code_file": "train_baseline2.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["matthewjansen/ucf101-action-recognition"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

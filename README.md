@@ -17,7 +17,7 @@ or product.
 |---|---|---|
 | 0 — Scoping | Problem definition, dataset/compute decisions, repo setup | ✅ |
 | 1 — Data pipeline | Configurable UCF101 loader, frame sampling | ✅ |
-| 2 — Baselines | Frame-level pooling ✅, CLIP zero-shot (built, not yet run), CNN+LSTM/GRU | in progress |
+| 2 — Baselines | Frame-level pooling ✅, CNN+LSTM/GRU ✅, CLIP zero-shot (built, not yet run) | in progress |
 | 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | in progress (confusion matrix done via Baseline 1 eval) |
 | 4 — Explainability | Grad-CAM on selected frames, annotated showcase GIF | planned |
 | 5 — Full experiment suite | Temporal-resolution/modeling/augmentation ablations, robustness, bias-mitigation, unsupervised clustering, simulated A/B evaluation | deferred (post-MVP) |
@@ -49,9 +49,31 @@ The two worst-performing classes, `BasketballDunk` (F1 0.49) and `Basketball`
 (F1 0.59), are confused with each other specifically — in both directions —
 not just generically "hard." Both share the same visual scene (court, hoop,
 players), so the only real distinguishing signal is the dunking *motion*,
-which temporal average pooling destroys by construction. This is the
-project's core research question in miniature, and a natural test case for
-whether Baseline 2's temporal modeling actually resolves it.
+which temporal average pooling destroys by construction.
+
+**Baseline 2** (same frozen ResNet18 backbone → LSTM/GRU over the per-frame
+sequence, instead of averaging) directly tests whether that matters:
+
+| Model | Top-1 (test) | Macro F1 (test) | `BasketballDunk` correct |
+|---|---|---|---|
+| Baseline 1 (avg pool) | 96.11% | 96.52% | 11/17 |
+| Baseline 2 (LSTM) | 92.69% | 92.51% | 0/17 |
+| Baseline 2 (GRU) | 93.67% | 93.47% | 0/17 |
+
+**It didn't — the RNN underperformed the simpler baseline, on aggregate and on
+this specific pair.** First training run showed real overfitting/instability
+(diagnosed via the train/val curves, not just the final number); a second run
+fixed the process issues (gradient clipping, a second RNN layer to enable
+real internal dropout, a lower learning rate) and training did stabilize —
+but accuracy didn't improve and `BasketballDunk` still went to 0/17 correct in
+both runs. That persistence across two different training regimes points past
+"bad training" to a representational bottleneck: the backbone is
+ImageNet-pretrained for static image classification, frozen, never fine-tuned
+for motion — so per-frame embeddings for a dunk vs. generic dribbling in the
+same scene may simply be near-identical in that feature space, in which case
+no amount of RNN tuning can recover a distinction the input features never
+encoded. Full writeup in [journey.md](journey.md) (Phase 8); full metrics in
+[reports/baseline2_metrics.json](reports/baseline2_metrics.json).
 
 ## Repo structure
 
@@ -74,7 +96,7 @@ reports/           # generated results (metrics, figures)
 
 Local development targets a CPU-only machine — all `src/` code is written to run
 against tiny synthetic fixtures for testing. Real data download, preprocessing at
-scale, and model training run in Kaggle GPU kernels (see `notebooks/`).
+scale, and model training run in Kaggle GPU kernels (see `kaggle_kernel/`).
 
 ## Reproducing
 
