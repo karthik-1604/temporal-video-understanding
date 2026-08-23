@@ -650,7 +650,7 @@ work on already-collected results, not new training runs.
   unit tests (82 total) — shape, value range, target-class selection, frozen/
   unfrozen backbone, invalid-input handling — all against random tensors.
 
-### Next step
+### Next step (from Phase 10)
 
 Pull the annotation-analysis kernel's results once complete; then build the
 Kaggle explainability kernel that retrains Baseline 1's head (fast, ~11 min,
@@ -658,3 +658,74 @@ avoids managing a separate checkpoint artifact), runs `GradCAM` against a
 handful of real examples (including the Basketball/BasketballDunk pair and a
 perfect-F1 class like `YoYo`), overlays heatmaps on frames, and assembles a
 small annotated GIF for the README alongside static example images.
+
+**Operational note**: the annotation-analysis kernel appeared stuck (still
+`RUNNING` after ~50 min of polling, far longer than the ~11-15 min full-decode
+training kernels took for similarly-sized scans) and was about to be killed
+and rewritten with sampling + parallelism. Checked the actual Kaggle web
+dashboard directly first (at the user's prompt) rather than trusting the CLI
+polling loop's read alone — the real per-kernel execution log showed a
+perfectly healthy ~30 videos/sec scan, on track to finish in ~7-8 minutes; it
+completed normally shortly after. The CLI's `kernels status`/`kernels logs`
+(without `-f`) gave no visibility into actual progress during the run, only a
+terminal-state check — worth remembering before assuming "no status change in
+N minutes" means stuck, especially for a kernel design (no periodic status
+transitions) that only prints to its own log, not to the CLI-visible status.
+
+---
+
+## Phase 11 — Full annotation analysis (2026-08-22)
+
+### Results
+
+Scanned all 13,451 real videos (zero read errors) via `decord.VideoReader`
+header/index reads (no frame decoding, CPU-only, ~35 videos/sec):
+
+| Stat | Value |
+|---|---|
+| Duration (mean / median) | 7.16s / 6.41s |
+| Duration (min / max) | 1.07s / 71.04s |
+| Duration (p10 / p90) | 3.20s / 12.00s |
+| Frame count (mean / median) | 185.4 / 166.0 |
+| Frame count (min / max) | 29 / 1,776 |
+| FPS | bimodal: 25.0 or 29.97 (two source frame rates, expected for web-sourced UCF101) |
+
+### Investigated finding: class imbalance is the more parsimonious explanation for the Basketball/BasketballDunk result
+
+**`Basketball` has 198 training examples — exactly 2x `BasketballDunk`'s 98 —
+and is the single largest class in the entire dataset** (next-largest is
+`CricketShot` at 125; median class size is 98, mean 99.6; smallest classes
+sit at 75). This wasn't visible when the confusion was first found (Phase 6),
+since that only used the *test*-split confusion matrix, not train-split class
+counts.
+
+This is a more parsimonious explanation than either earlier hypothesis
+(Phase 8's "frozen backbone lacks motion," Phase 9's partial CLIP evidence)
+for the *direction* of the bias specifically — a classifier trained with
+plain unweighted cross-entropy on 2x more `Basketball` examples than
+`BasketballDunk` examples will naturally lean toward predicting the majority
+class on any genuinely ambiguous input, independent of whether the underlying
+features encode motion at all. It doesn't replace those hypotheses (CLIP's
+zero-shot failure, with *no* class-count exposure during training at all,
+still needs a separate explanation — most likely the prompt-template gap
+already identified in Phase 9), but it's likely the dominant factor for
+Baselines 1 and 2's specific bias *direction* toward `Basketball`.
+
+This directly motivates **Experiment D (class-weighted loss / focal loss,
+already planned as Phase 2 bias-mitigation work)** as a concrete, targeted
+test — re-run Baseline 1 or 2 with class-weighted cross-entropy and check
+specifically whether the `BasketballDunk` recall improves, rather than only
+reporting an aggregate macro-F1 change.
+
+### What exists after this step
+
+- `reports/annotation_analysis.json` — full class distribution (all
+  splits/classes), duration/frame-count/fps stats, per-class averages.
+- `kaggle_kernel/annotation_analysis/output/` — kernel log kept for the
+  record.
+
+### Next step
+
+Build the Kaggle explainability kernel (Grad-CAM + showcase GIF, per the plan
+above) — the last MVP item. The class-imbalance finding above is Phase-2
+follow-up (Experiment D), not blocking the MVP.

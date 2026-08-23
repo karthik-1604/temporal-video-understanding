@@ -18,7 +18,7 @@ or product.
 | 0 — Scoping | Problem definition, dataset/compute decisions, repo setup | ✅ |
 | 1 — Data pipeline | Configurable UCF101 loader, frame sampling | ✅ |
 | 2 — Baselines | Frame-level pooling ✅, CNN+LSTM/GRU ✅, CLIP zero-shot ✅ | ✅ MVP baseline set complete |
-| 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | in progress (confusion matrices done via baseline evals) |
+| 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | ✅ |
 | 4 — Explainability | Grad-CAM on selected frames, annotated showcase GIF | planned |
 | 5 — Full experiment suite | Temporal-resolution/modeling/augmentation ablations, robustness, bias-mitigation, unsupervised clustering, simulated A/B evaluation | deferred (post-MVP) |
 | 6 — Report & polish | Formal report, README results/charts, optional AWS exposure | deferred |
@@ -27,6 +27,26 @@ See [journey.md](journey.md) for the full running build log (decisions and why,
 what exists at each step, what's next).
 
 ## Results so far
+
+### Dataset
+
+All 13,451 real UCF101 clips scanned for annotation analysis (0 read errors):
+
+| Stat | Value |
+|---|---|
+| Duration (mean / median) | 7.16s / 6.41s |
+| Frame count (mean / median) | 185.4 / 166.0 |
+| FPS | bimodal: 25.0 or 29.97 (two source frame rates) |
+| Class size (min / median / max) | 75 / 98 / 198 (`Basketball` is the largest class, 2x `BasketballDunk`) |
+
+That last number turns out to matter: `Basketball` having exactly 2x
+`BasketballDunk`'s training examples — and being the single largest class in
+the dataset — is a more parsimonious explanation for the confusion bias
+below than the motion-blindness hypothesis alone (a plain cross-entropy
+classifier naturally leans toward the majority class on ambiguous inputs).
+Full stats in [reports/annotation_analysis.json](reports/annotation_analysis.json).
+
+### Baselines
 
 **Baseline 1** (frame-level: frozen pretrained ResNet18 features → temporal
 average pooling → MLP head), trained on the real UCF101 split
@@ -93,11 +113,12 @@ alongside classes with no plausible motion-blindness story at all (`YoYo`,
 `PlayingDaf`, `Punch`). That looks more like a single naive prompt template
 (`"a video of a person {class}"`) failing to produce a useful text embedding
 for certain class names than a targeted confirmation of the earlier
-hypothesis. Honest combined read: Baseline 1's partial success on this pair
-is more likely a *trained* classifier exploiting some dataset-specific static
-correlation (e.g. camera framing near the hoop) than genuine motion
-understanding — which no baseline here actually demonstrates. Full writeup in
-[journey.md](journey.md) (Phase 9); full metrics in
+hypothesis. **Updated after the annotation analysis below**: the class-count
+imbalance (`Basketball` has 2x `BasketballDunk`'s training examples) is a
+more parsimonious explanation for Baselines 1/2's specific bias *toward*
+`Basketball` than motion-blindness alone — though it doesn't explain CLIP's
+zero-shot failure, which never saw this dataset's class counts at all. Full
+writeup in [journey.md](journey.md) (Phases 9 and 11); full metrics in
 [reports/baseline3_metrics.json](reports/baseline3_metrics.json).
 
 ## Repo structure
