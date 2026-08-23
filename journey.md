@@ -609,9 +609,52 @@ baselines.
 - MVP baseline set complete: 3 baselines, all with real results on the
   identical test split, differences investigated rather than just reported.
 
-### Next step
+### Next step (from Phase 9)
 
 Annotation analysis (class distribution, duration/frame-count stats — the
 confusion matrices already exist from all 3 baselines) and the Explainability
 phase (Grad-CAM + the showcase GIF). Both are now data-analysis/visualization
 work on already-collected results, not new training runs.
+
+---
+
+## Phase 10 — Annotation analysis kernel + Grad-CAM module (2026-08-22)
+
+### Decisions made and why
+
+- **Annotation analysis kernel is CPU-only**: it only needs `decord.VideoReader`
+  to read each video's frame count/fps (header/index only, no frame decode),
+  so there's no GPU work at all — matches the project's own "does this need a
+  GPU at all?" rule from the Kaggle workflow notes.
+- **Class-distribution/duration stats need a Kaggle run** (the real CSVs and
+  videos aren't local), but **per-class difficulty and confusion matrices
+  don't** — those already exist in the three `reports/baselineN_metrics.json`
+  files pulled back earlier. Split the annotation-analysis work accordingly:
+  new Kaggle kernel only for what isn't already available locally.
+- **Grad-CAM built and unit-tested locally first**, same pattern as every
+  other model component: the hook mechanics (activation/gradient capture,
+  channel-weighting, normalization, shape) don't depend on real images at all
+  — a `pretrained=False` model with random input and `requires_grad_(True)`
+  exercises the exact same autograd graph structure as a real trained model.
+  Real semantics (does the heatmap highlight something meaningful) can only be
+  checked against real frames, which happens in the Kaggle explainability
+  kernel next.
+
+### What exists after this step
+
+- `kaggle_kernel/annotation_analysis/` — CPU-only kernel scanning all
+  ~13,451 videos for class distribution + duration/frame-count/fps stats.
+- `src/explainability/gradcam.py` — `GradCAM`: hooks a backbone's target layer
+  (default `layer4`, works for resnet18/34), backprops the target (or
+  predicted) class's logit, produces one normalized heatmap per frame. 9 new
+  unit tests (82 total) — shape, value range, target-class selection, frozen/
+  unfrozen backbone, invalid-input handling — all against random tensors.
+
+### Next step
+
+Pull the annotation-analysis kernel's results once complete; then build the
+Kaggle explainability kernel that retrains Baseline 1's head (fast, ~11 min,
+avoids managing a separate checkpoint artifact), runs `GradCAM` against a
+handful of real examples (including the Basketball/BasketballDunk pair and a
+perfect-F1 class like `YoYo`), overlays heatmaps on frames, and assembles a
+small annotated GIF for the README alongside static example images.

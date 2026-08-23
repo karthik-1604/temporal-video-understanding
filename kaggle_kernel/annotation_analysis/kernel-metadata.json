@@ -1,0 +1,14 @@
+{
+  "id": "karthiksatya1610/ucf101-annotation-analysis",
+  "title": "ucf101-annotation-analysis",
+  "code_file": "annotation_analysis.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["matthewjansen/ucf101-action-recognition"],
+  "competition_sources": [],
+  "kernel_sources": []
+}
