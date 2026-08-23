@@ -531,10 +531,87 @@ continuing to tune the RNN on top of a fixed image backbone.
 - `reports/baseline2_metrics_v1_overfit.json` — v1 results, kept for the
   before/after record.
 
-### Next step
+### Next step (from Phase 8)
 
 Baseline 3 (CLIP zero-shot) — architecture already built (Phase 5); write and
 run its Kaggle kernel. Also worth specifically checking whether CLIP's
 image-text embedding space handles the Basketball/BasketballDunk pair any
 differently, given it's a genuinely different representation than
 ImageNet-supervised ResNet features.
+
+---
+
+## Phase 9 — Baseline 3 (CLIP zero-shot) real results (2026-08-22)
+
+### Results
+
+`ViT-B-32` (OpenAI weights), zero-shot on the same 1,723-clip test split, no
+UCF101 training data used at all:
+
+| Metric | Value |
+|---|---|
+| Top-1 accuracy | 65.24% |
+| Top-5 accuracy | 89.20% |
+| Macro F1 | 60.45% |
+| Params | 151.28M (all frozen, zero-shot) |
+| Latency (GPU compute only) | 27.65 ms/clip |
+| Eval throughput (incl. decode) | 8.55 clips/sec |
+| Peak GPU memory | 778 MB |
+
+65% top-1 on a 101-way task with **zero labeled training examples** is a
+strong result in absolute terms (in line with published CLIP zero-shot
+numbers on UCF101), just well below the trained baselines (96.1% / 92.7% /
+93.7%) — expected, since it has no access to this dataset's label
+distribution or visual idiosyncrasies at all.
+
+### Investigated: does CLIP also fail on Basketball/BasketballDunk? Yes — but the reason is more nuanced than it first looks
+
+**CLIP zero-shot also got 0/17 `BasketballDunk` correct** (all 17 → `Basketball`)
+— the same complete failure as both LSTM and GRU. First read: three
+architecturally distinct models (supervised-pooled, recurrent, contrastive
+zero-shot) all failing on the identical pair looks like strong triangulating
+evidence for the Phase 8 hypothesis (frame-level features don't encode the
+motion that distinguishes them).
+
+**Checked further before accepting that reading**: `BasketballDunk` is not an
+isolated CLIP failure — **11 of 101 classes get F1 = 0.0** for CLIP zero-shot
+(`BalanceBeam`, `BasketballDunk`, `BreastStroke`, `JumpingJack`, `Lunges`,
+`ParallelBars`, `PlayingDaf`, `Punch`, `Shotput`, `StillRings`, `YoYo`).
+Notably `YoYo` — one of Baseline 1's *perfect* (F1 = 1.0) classes — is in this
+list, and several others (`PlayingDaf`, an uncommon percussion instrument;
+generic single-word actions like `Punch`/`Lunges`) look more like the single
+naive prompt template (`"a video of a person {class}"`) failing to produce a
+useful CLIP text embedding for that class at all, than motion-blindness
+specifically. **This is a broad zero-shot prompt-coverage gap, not a targeted
+confirmation of the Phase 8 hypothesis** — CLIP's `BasketballDunk` failure is
+*consistent with* that hypothesis but doesn't independently confirm it, since
+the same failure mode (F1 = 0) hits classes with no plausible motion-blindness
+story at all.
+
+Honest combined picture: Baseline 1's partial success on `BasketballDunk`
+(11/17, via a classifier *trained* on this dataset's labels) is most likely
+explained by that trained classifier exploiting some correlated static cue
+(e.g. camera framing near the hoop) specific to this dataset — not by
+average-pooled features somehow capturing motion, which they structurally
+cannot. The RNNs, given the same underlying per-frame features but a harder
+optimization problem and fewer effective examples reaching the recurrent
+path, didn't find/exploit that same shortcut. CLIP, with no training signal
+on this dataset at all, has no opportunity to find it either. None of this
+constitutes evidence that any of these models genuinely understand the
+dunking motion — that remains an open, well-motivated question for Model 4
+(a real video-native architecture) in Phase 2, not resolved by the MVP
+baselines.
+
+### What exists after this step
+
+- `kaggle_kernel/baseline3_clip_zeroshot/` — kernel + log.
+- `reports/baseline3_metrics.json` — full results.
+- MVP baseline set complete: 3 baselines, all with real results on the
+  identical test split, differences investigated rather than just reported.
+
+### Next step
+
+Annotation analysis (class distribution, duration/frame-count stats — the
+confusion matrices already exist from all 3 baselines) and the Explainability
+phase (Grad-CAM + the showcase GIF). Both are now data-analysis/visualization
+work on already-collected results, not new training runs.

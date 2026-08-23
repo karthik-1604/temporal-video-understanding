@@ -17,8 +17,8 @@ or product.
 |---|---|---|
 | 0 — Scoping | Problem definition, dataset/compute decisions, repo setup | ✅ |
 | 1 — Data pipeline | Configurable UCF101 loader, frame sampling | ✅ |
-| 2 — Baselines | Frame-level pooling ✅, CNN+LSTM/GRU ✅, CLIP zero-shot (built, not yet run) | in progress |
-| 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | in progress (confusion matrix done via Baseline 1 eval) |
+| 2 — Baselines | Frame-level pooling ✅, CNN+LSTM/GRU ✅, CLIP zero-shot ✅ | ✅ MVP baseline set complete |
+| 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | in progress (confusion matrices done via baseline evals) |
 | 4 — Explainability | Grad-CAM on selected frames, annotated showcase GIF | planned |
 | 5 — Full experiment suite | Temporal-resolution/modeling/augmentation ablations, robustness, bias-mitigation, unsupervised clustering, simulated A/B evaluation | deferred (post-MVP) |
 | 6 — Report & polish | Formal report, README results/charts, optional AWS exposure | deferred |
@@ -74,6 +74,31 @@ same scene may simply be near-identical in that feature space, in which case
 no amount of RNN tuning can recover a distinction the input features never
 encoded. Full writeup in [journey.md](journey.md) (Phase 8); full metrics in
 [reports/baseline2_metrics.json](reports/baseline2_metrics.json).
+
+**Baseline 3** (CLIP `ViT-B-32`, zero-shot — no UCF101 training data at all)
+closes out the MVP baseline set:
+
+| Model | Top-1 (test) | Macro F1 (test) | `BasketballDunk` correct |
+|---|---|---|---|
+| Baseline 1 (avg pool) | 96.11% | 96.52% | 11/17 |
+| Baseline 2 (GRU, best RNN) | 93.67% | 93.47% | 0/17 |
+| Baseline 3 (CLIP zero-shot) | 65.24% | 60.45% | 0/17 |
+
+65% top-1 on a 101-way task with zero labeled examples is a strong absolute
+result — but it also fails `BasketballDunk` completely, same as the RNNs.
+**Checked whether that's confirmation of the Phase 8 motion-blindness
+hypothesis before assuming it was**: it isn't a clean confirmation —
+`BasketballDunk` is 1 of **11 classes** where CLIP zero-shot scores F1 = 0.0,
+alongside classes with no plausible motion-blindness story at all (`YoYo`,
+`PlayingDaf`, `Punch`). That looks more like a single naive prompt template
+(`"a video of a person {class}"`) failing to produce a useful text embedding
+for certain class names than a targeted confirmation of the earlier
+hypothesis. Honest combined read: Baseline 1's partial success on this pair
+is more likely a *trained* classifier exploiting some dataset-specific static
+correlation (e.g. camera framing near the hoop) than genuine motion
+understanding — which no baseline here actually demonstrates. Full writeup in
+[journey.md](journey.md) (Phase 9); full metrics in
+[reports/baseline3_metrics.json](reports/baseline3_metrics.json).
 
 ## Repo structure
 

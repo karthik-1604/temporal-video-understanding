@@ -1,0 +1,53 @@
+[{"stream_name":"stderr","time":0.741602933,"data":"Cloning into 'repo'...\n"}
+,{"stream_name":"stdout","time":1.596423653,"data":"P100 detected (Tesla P100-PCIE-16GB) — reinstalling torch for sm_60 support\n"}
+,{"stream_name":"stdout","time":12.057979317,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.857121097,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 124.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.416697823,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 224.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.549440529,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 205.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.679681344,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 205.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":23.536387266,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":28.394019801,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 79.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":31.162236019,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 118.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":31.914021413,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 152.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":32.958219573,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 158.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":34.291940402,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 129.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":37.230801823,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 119.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":37.972887752,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 119.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":40.000002186,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 8.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":40.869785041,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 70.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":155.475938242,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":155.475968296,"data":"torchaudio 2.10.0+cu128 requires torch==2.10.0, but you have torch 2.5.1+cu121 which is incompatible.\n"}
+,{"stream_name":"stdout","time":157.662676522,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.6/13.6 MB 103.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":157.696534178,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 76.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":157.718940462,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.8/44.8 kB 3.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":165.177505527,"data":"GPU verified: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":190.689125951,"data":"test=1723 classes=101\n"}
+,{"stream_name":"stderr","time":203.854028622,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":203.854082504,"data":"WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":208.01603708,"data":"/usr/local/lib/python3.12/dist-packages/open_clip/factory.py:450: UserWarning: QuickGELU mismatch between final model config (quick_gelu=False) and pretrained tag 'openai' (quick_gelu=True).\n"}
+,{"stream_name":"stderr","time":208.016067679,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":210.279998765,"data":"CLIP model loaded\n"}
+,{"stream_name":"stdout","time":233.770488579,"data":"200/1723 clips in 23.5s (8.51 clips/sec)\n"}
+,{"stream_name":"stdout","time":256.667776042,"data":"400/1723 clips in 46.4s (8.62 clips/sec)\n"}
+,{"stream_name":"stdout","time":280.957960117,"data":"600/1723 clips in 70.7s (8.49 clips/sec)\n"}
+,{"stream_name":"stdout","time":304.790820494,"data":"800/1723 clips in 94.5s (8.46 clips/sec)\n"}
+,{"stream_name":"stdout","time":327.39737386,"data":"1000/1723 clips in 117.1s (8.54 clips/sec)\n"}
+,{"stream_name":"stdout","time":350.657945666,"data":"1200/1723 clips in 140.4s (8.55 clips/sec)\n"}
+,{"stream_name":"stdout","time":373.173896268,"data":"1400/1723 clips in 162.9s (8.59 clips/sec)\n"}
+,{"stream_name":"stdout","time":396.772046557,"data":"1600/1723 clips in 186.5s (8.58 clips/sec)\n"}
+,{"stream_name":"stdout","time":411.790461631,"data":"total: 1723 clips in 201.5s (8.55 clips/sec)\n"}
+,{"stream_name":"stdout","time":411.816041724,"data":"zero-shot test top1=0.6524 top5=0.8920 macro_f1=0.6045\n"}
+,{"stream_name":"stdout","time":411.816068487,"data":"BasketballDunk: 0/17 correct\n"}
+,{"stream_name":"stdout","time":411.816127126,"data":"BasketballDunk row: {'Basketball': 17}\n"}
+,{"stream_name":"stdout","time":411.816248588,"data":"Basketball row: {'Basketball': 28, 'BasketballDunk': 5, 'TennisSwing': 1}\n"}
+,{"stream_name":"stdout","time":412.530444561,"data":"CLIP inference latency (GPU compute only): 27.65 ms/clip\n"}
+,{"stream_name":"stdout","time":412.536084504,"data":"\n"}
+,{"stream_name":"stdout","time":412.53610403,"data":"saved results/baseline3_metrics.json\n"}
+,{"stream_name":"stdout","time":412.536118245,"data":"done\n"}
+,{"stream_name":"stderr","time":415.568376664,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":415.568403488,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":415.766225248,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":415.766252804,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":416.356857742,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":417.421864527,"data":"[NbConvertApp] Writing 306171 bytes to __results__.html\n"}
+]
