@@ -1,0 +1,40 @@
+[{"stream_name":"stderr","time":0.784309485,"data":"Cloning into 'repo'...\n"}
+,{"stream_name":"stdout","time":1.684639279,"data":"P100 detected (Tesla P100-PCIE-16GB) — reinstalling torch for sm_60 support\n"}
+,{"stream_name":"stdout","time":12.20389096,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.101470543,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 98.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.377072462,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 216.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.508945893,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 215.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.636398625,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 185.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":22.688446315,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":27.343451201,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 90.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":29.607738925,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 137.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":30.282662311,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 197.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":31.029057492,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 163.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":32.275637072,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 130.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":33.738560778,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 142.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":35.074718987,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 120.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":37.295853523,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 9.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":38.168157675,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 72.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":154.949648894,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":154.949726689,"data":"torchaudio 2.10.0+cu128 requires torch==2.10.0, but you have torch 2.5.1+cu121 which is incompatible.\n"}
+,{"stream_name":"stdout","time":156.907383837,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.6/13.6 MB 99.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":161.737543191,"data":"GPU verified: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stderr","time":192.30758275,"data":"Downloading: \"https://download.pytorch.org/models/resnet18-f37072fd.pth\" to /root/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth\n"}
+,{"stream_name":"stderr","time":192.713876673,"data":"\r  0%|          | 0.00/44.7M [00:00\u003c?, ?B/s]\r 21%|██▏       | 9.50M/44.7M [00:00\u003c00:00, 99.3MB/s]\r 60%|██████    | 27.0M/44.7M [00:00\u003c00:00, 149MB/s] \r100%|█████████▉| 44.5M/44.7M [00:00\u003c00:00, 164MB/s]\r100%|██████████| 44.7M/44.7M [00:00\u003c00:00, 155MB/s]\n"}
+,{"stream_name":"stdout","time":656.802764409,"data":"train: extracted 10055 embeddings in 464.0s (21.67 clips/sec)\n"}
+,{"stream_name":"stdout","time":735.908478583,"data":"val: extracted 1673 embeddings in 79.1s (21.15 clips/sec)\n"}
+,{"stream_name":"stdout","time":746.940473489,"data":"retrained head: best val_acc=0.9456\n"}
+,{"stream_name":"stdout","time":751.464904834,"data":"selected examples: {'basketball_correct': 'v_Basketball_g21_c06', 'dunk_misclassified': 'v_BasketballDunk_g01_c04', 'yoyo_correct': 'v_YoYo_g02_c03'}\n"}
+,{"stream_name":"stdout","time":752.188882151,"data":"saved /kaggle/working/results/gradcam_basketball_correct.gif (228470 bytes)\n"}
+,{"stream_name":"stdout","time":753.128783042,"data":"saved /kaggle/working/results/gradcam_dunk_misclassified.gif (328315 bytes)\n"}
+,{"stream_name":"stdout","time":753.946390772,"data":"saved /kaggle/working/results/gradcam_yoyo_correct.gif (257424 bytes)\n"}
+,{"stream_name":"stdout","time":753.946813114,"data":"\n"}
+,{"stream_name":"stdout","time":753.946828265,"data":"saved results/explainability_examples.json and per-example GIFs\n"}
+,{"stream_name":"stdout","time":753.946835083,"data":"done\n"}
+,{"stream_name":"stderr","time":756.610402663,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":756.610434417,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":756.81846574,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":756.818486386,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":757.41731196,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":758.555951786,"data":"[NbConvertApp] Writing 316809 bytes to __results__.html\n"}
+]

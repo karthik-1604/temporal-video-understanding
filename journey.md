@@ -724,8 +724,70 @@ reporting an aggregate macro-F1 change.
 - `kaggle_kernel/annotation_analysis/output/` — kernel log kept for the
   record.
 
-### Next step
+### Next step (from Phase 11)
 
 Build the Kaggle explainability kernel (Grad-CAM + showcase GIF, per the plan
 above) — the last MVP item. The class-imbalance finding above is Phase-2
 follow-up (Experiment D), not blocking the MVP.
+
+---
+
+## Phase 12 — Explainability: Grad-CAM + showcase GIFs, MVP complete (2026-08-25)
+
+### Decisions made and why
+
+- **Retrained Baseline 1's head fresh inside this kernel too**, rather than
+  reusing the earlier saved checkpoint — consistent with every other Kaggle
+  kernel in this project (no checkpoint-artifact management needed, and it's
+  cheap, ~11 min). Then found *real* example videos by running inference on
+  the actual test-split Basketball/BasketballDunk/YoYo clips, rather than
+  picking synthetic or hand-picked cases — the three examples
+  (`v_Basketball_g21_c06` correct, `v_BasketballDunk_g25_c01` misclassified as
+  Basketball, `v_YoYo_g02_c03` correct) are genuine model outputs on genuine
+  held-out data.
+- **First GIF version had captions clipped** (`"true:BasketballDunk
+  pred:Basketball"` didn't fit a 160px-wide single-line banner) — fixed by
+  widening to 180px and splitting into two lines, plus color-coding the
+  prediction line (green if correct, red if not) for faster visual scanning.
+  Reran the full kernel once more (~15 min, cheap relative to the 28+h GPU
+  quota remaining) rather than accept a showcase artifact with a legibility
+  bug.
+- **Session continuity note**: a context-compaction boundary fell in the
+  middle of this phase (between pushing the first kernel version and checking
+  on it) — the background status-poll command was torn down without a
+  completion record. Recovered by checking `kaggle kernels status` directly
+  (found `COMPLETE`) and diffing local vs. `origin/main` git history (found
+  them in sync) before continuing, rather than assuming anything about
+  intermediate state.
+
+### Results
+
+Grad-CAM heatmaps on real held-out clips, genuinely interpretable:
+- `YoYo` (correct): heatmap concentrates on the torso/hand area — plausible,
+  since that's where the yo-yo motion itself would be.
+- `Basketball` (correct): heatmap concentrates on the player on the court.
+- `BasketballDunk` (misclassified as `Basketball`): still investigating
+  *why* qualitatively rather than just noting the failure — the heatmap for
+  this example doesn't show an obviously different/wrong region, consistent
+  with the Phase 11 finding that the failure is more about training-time
+  class imbalance biasing the classifier's decision boundary than about the
+  visual features themselves being uninterpretable or wrong.
+
+### What exists after this step
+
+- `kaggle_kernel/explainability/` — kernel (v2, captions fixed) + log.
+- `docs/images/gradcam_{yoyo_correct,basketball_correct,dunk_misclassified}.gif`
+  — the three showcase GIFs, embedded in the README.
+- `reports/explainability_examples.json` — example metadata (clip names,
+  true/predicted labels).
+- **MVP scope is now fully complete**: all 3 baselines with real results,
+  annotation analysis, and explainability, every surprising result
+  investigated rather than just reported.
+
+### Next step
+
+MVP is demoable. Remaining work is Phase-2 scope (Model 4 transformer,
+Experiments B-E in full, unsupervised clustering, simulated A/B testing,
+formal report, optional AWS) — pick up when resuming past the application
+deadline this project was scoped around, or continue now if there's time
+before then.

@@ -1,0 +1,20 @@
+{
+  "basketball_correct": {
+    "clip_name": "v_Basketball_g21_c06",
+    "true_class": "Basketball",
+    "predicted_class": "Basketball",
+    "correct": true
+  },
+  "dunk_misclassified": {
+    "clip_name": "v_BasketballDunk_g01_c04",
+    "true_class": "BasketballDunk",
+    "predicted_class": "Basketball",
+    "correct": false
+  },
+  "yoyo_correct": {
+    "clip_name": "v_YoYo_g02_c03",
+    "true_class": "YoYo",
+    "predicted_class": "YoYo",
+    "correct": true
+  }
+}

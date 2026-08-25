@@ -19,9 +19,11 @@ or product.
 | 1 — Data pipeline | Configurable UCF101 loader, frame sampling | ✅ |
 | 2 — Baselines | Frame-level pooling ✅, CNN+LSTM/GRU ✅, CLIP zero-shot ✅ | ✅ MVP baseline set complete |
 | 3 — Annotation analysis | Class distribution, duration/frame-count stats, confusion matrix | ✅ |
-| 4 — Explainability | Grad-CAM on selected frames, annotated showcase GIF | planned |
+| 4 — Explainability | Grad-CAM on selected frames, annotated showcase GIF | ✅ |
 | 5 — Full experiment suite | Temporal-resolution/modeling/augmentation ablations, robustness, bias-mitigation, unsupervised clustering, simulated A/B evaluation | deferred (post-MVP) |
 | 6 — Report & polish | Formal report, README results/charts, optional AWS exposure | deferred |
+
+**MVP scope complete** as of this phase — all three baselines, annotation analysis, and explainability done with real results on real data. Phase 5/6 items are the planned expansion beyond the MVP.
 
 See [journey.md](journey.md) for the full running build log (decisions and why,
 what exists at each step, what's next).
@@ -120,6 +122,24 @@ more parsimonious explanation for Baselines 1/2's specific bias *toward*
 zero-shot failure, which never saw this dataset's class counts at all. Full
 writeup in [journey.md](journey.md) (Phases 9 and 11); full metrics in
 [reports/baseline3_metrics.json](reports/baseline3_metrics.json).
+
+### Explainability
+
+Grad-CAM on Baseline 1, applied to the exact cases investigated above —
+retrained fresh inside the Kaggle kernel rather than loading a saved
+checkpoint (same choice as every training kernel in this project), then run
+against real held-out test clips. Heatmaps generated per frame, overlaid, and
+assembled into a looping GIF (green caption = correct, red = incorrect):
+
+<table>
+<tr>
+<td><img src="docs/images/gradcam_yoyo_correct.gif" width="180" alt="Grad-CAM on a correctly classified YoYo clip"><br><sub>Correct: <code>YoYo</code> — heatmap centers on the torso/hand area</sub></td>
+<td><img src="docs/images/gradcam_basketball_correct.gif" width="180" alt="Grad-CAM on a correctly classified Basketball clip"><br><sub>Correct: <code>Basketball</code> — heatmap centers on the player</sub></td>
+<td><img src="docs/images/gradcam_dunk_misclassified.gif" width="180" alt="Grad-CAM on a misclassified BasketballDunk clip, predicted as Basketball"><br><sub>Misclassified: <code>BasketballDunk</code> → predicted <code>Basketball</code></sub></td>
+</tr>
+</table>
+
+Example metadata in [reports/explainability_examples.json](reports/explainability_examples.json).
 
 ## Repo structure
 
